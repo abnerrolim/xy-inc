@@ -1,6 +1,9 @@
-import com.google.inject.AbstractModule;
 import java.time.Clock;
 
+import com.google.inject.AbstractModule;
+
+import models.APIRepository;
+import models.APIRepositoryMongoDB;
 import services.ApplicationTimer;
 import services.AtomicCounter;
 import services.Counter;
@@ -26,6 +29,7 @@ public class Module extends AbstractModule {
         bind(ApplicationTimer.class).asEagerSingleton();
         // Set AtomicCounter as the implementation for Counter.
         bind(Counter.class).to(AtomicCounter.class);
+        bind(APIRepository.class).to(APIRepositoryMongoDB.class);
     }
 
 }
