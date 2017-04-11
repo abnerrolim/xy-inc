@@ -28,3 +28,4 @@ At this time, only the beta version of UI to create an API is implemented. Is th
 - [ ] Docker image on travis
 - [ ] Full Json Schema support on UI
 - [ ] Auto-generated API documentation
+- [ ] Clean unused sbt plugins (added by default)
