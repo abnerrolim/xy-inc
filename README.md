@@ -26,3 +26,5 @@ At this time, only the beta version of UI to create an API is implemented. Is th
 - [ ] Multi-tenancy
 - [ ] Full UI to allow edit api and test CRUD operations
 - [ ] Docker image on travis
+- [ ] Full Json Schema support on UI
+- [ ] Auto-generated API documentation
