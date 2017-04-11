@@ -1,23 +1,62 @@
-@*
- * This template is called from the `index` template. This template
- * handles the rendering of the page header and body tags. It takes
- * two arguments, a `String` for the title of the page and an `Html`
- * object to insert into the body of the page.
- *@
 @(title: String)(content: Html)
 
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        @* Here's where we render the page title `String`. *@
         <title>@title</title>
-        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
-        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
-        <script src="@routes.Assets.versioned("javascripts/hello.js")" type="text/javascript"></script>
+  
+<script
+  src="https://code.jquery.com/jquery-3.2.1.js"
+  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+  crossorigin="anonymous"></script>
+  	@()
+    @helper.javascriptRouter("jsRoutes")(
+    routes.javascript.APIController.saveAPI)
     </head>
+    <script>
+    function addMyApi()
+    {
+       var propertiesDiv = document.getElementsByClassName('props');
+       var mandatory = new Array();
+       
+       var jsonSchema = {
+    		   "title": document.getElementById("apiName").value,
+    		   "type": "object",
+    			"properties":{}
+       }
+       for(var i = 0; i < propertiesDiv.length; i++)
+       {
+    	  var currentDiv = propertiesDiv[i];
+    	  jsonSchema.properties[currentDiv.querySelector(".propertyName").value]= {
+    			  "type":currentDiv.querySelector(".propertyType").value
+    	  }
+    	  if(currentDiv.querySelector(".propertyRule").getAttribute("checked") == "checked"){
+    		  mandatory.push(currentDiv.querySelector(".propertyName").value);
+    	  }
+       }
+       jsonSchema.required=mandatory;
+       var newAPi = {
+    	   "name":document.getElementById("apiName").value,
+    	   "schema":jsonSchema
+       }
+       console.log(JSON.stringify(newAPi))
+       $.ajax({
+        type: "POST",
+        url: jsRoutes.controllers.APIController.saveAPI().url,
+        dataType:"json",
+        data: JSON.stringify(newAPi),
+        contentType:"application/json",
+        success: function(json){
+            alert("Creaded\n"+JSON.stringify(json));
+         }
+       });
+    }
+
+    addMoreFields = function (){
+    	this.insertAdjacentHTML('beforebegin','<p/><div class="props"><input type="text" class="propertyName" id="property1"/><select class="propertyType" ><option>string</option><option>number</option><option>boolean</option></select><input class="propertyRule" type="checkbox" checked="checked"/>Required?</div>');
+    }
+    </script>
     <body>
-        @* And here's where we render the `Html` object containing
-         * the page content. *@
         @content
     </body>
 </html>

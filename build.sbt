@@ -15,3 +15,5 @@ libraryDependencies += cache
 libraryDependencies += javaWs
 libraryDependencies += "uk.co.panaxiom" %% "play-jongo" % "2.0.0-jongo1.3"
 libraryDependencies += "com.github.fge" % "json-schema-validator" % "2.2.6"
+libraryDependencies += "org.mockito" % "mockito-all" % "1.10.19"
+

@@ -28,12 +28,12 @@ public class APIRepositoryMongoDB implements APIRepository {
 
 	@Override
 	public Iterator<APIObject> findAll(APIMetadata metadata) {
-		return jongo.getCollection(metadata.name).find().as(APIObject.class);
+		return jongo.getCollection(metadata.getName()).find().as(APIObject.class);
 	}
 
 	@Override
 	public APIObject findByID(String id, APIMetadata metadata) {
-		return jongo.getCollection(metadata.name).findOne(withOid(id)).as(APIObject.class);
+		return findOnRepoById(id, metadata.getName());
 	}
 
 	@Override
@@ -43,29 +43,40 @@ public class APIRepositoryMongoDB implements APIRepository {
 
 	@Override
 	public void remove(APIObject toDelete) {
-		jongo.getCollection(toDelete.getApiName()).remove(toDelete.getId());	
+		jongo.getCollection(toDelete.getApiName()).remove(withOid(toDelete.getId()));	
 	}
 	@Override
 	public void update(APIObject toUpdate) {
-		jongo.getCollection(toUpdate.getApiName()).update(toUpdate.getId()).with(toUpdate);
+		jongo.getCollection(toUpdate.getApiName()).update(withOid(toUpdate.getId())).with(toUpdate);
 	}
 
 	@Override
 	public void save(APIMetadata newbie) {
-		MongoCollection collection = jongo.getCollection(APIMetadata.NAMESPACE);
-		if( collection.count("{name: #}", newbie.name) < 1l )
-			collection.save(newbie);
+		if(isUniqueName(newbie.getName()))
+			jongo.getCollection(APIMetadata.NAMESPACE).save(newbie);
 		else
-			throw new RuntimeException("API name " + newbie.name + "already exists. Name should be unique");			
+			throw new RuntimeException("API name " + newbie.getName() + "already exists. Name should be unique");			
 	}
 
 	@Override
-	public void delete(APIMetadata toDelete) {
-		jongo.getCollection(APIMetadata.NAMESPACE).remove(toDelete.getId());
+	public void remove(APIMetadata toDelete) {
+		jongo.getCollection(APIMetadata.NAMESPACE).remove(withOid(toDelete.getId()));
 	}
+	
+	@Override
+	public boolean isUniqueName(String metadataName) {
+		MongoCollection collection = jongo.getCollection(APIMetadata.NAMESPACE);
+		return collection.count("{name: #}", metadataName) < 1l ;
+	}
+	
 	@Override
 	public void update(APIMetadata toUpdate) {
-		jongo.getCollection(APIMetadata.NAMESPACE).update(toUpdate.getId()).with(toUpdate);
+		jongo.getCollection(APIMetadata.NAMESPACE).update(withOid(toUpdate.getId())).with(toUpdate);
+	}
+
+	@Override
+	public APIObject findOnRepoById(String id, String repo) {
+		return jongo.getCollection(repo).findOne(withOid(id)).as(APIObject.class);
 	}
 	
 

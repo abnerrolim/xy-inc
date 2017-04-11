@@ -3,12 +3,17 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           controllers.HomeController.index
-GET     /testeexplosivo              controllers.APIController.test
-# An example controller showing how to use dependency injection
-GET     /count                      controllers.CountController.count
-# An example controller showing how to write asynchronous code
-GET     /message                    controllers.AsyncController.message
+GET     /                           controllers.APIController.index
+POST 	/api						controllers.APIController.saveAPI
+GET		/api/:apiName					controllers.APIController.findAPIByName(apiName : String)
+PUT 	/api/:apiName					controllers.APIController.updateAPI(apiName : String)
+
+POST 	/endpoint/:apiName				controllers.APIController.saveObject(apiName : String)
+GET		/endpoint/:apiName/:object		controllers.APIController.getObject(apiName : String, object : String)
+GET 	/endpoint/:apiName				controllers.APIController.listAllObjects(apiName : String)
+PUT		/endpoint/:apiName/:object		controllers.APIController.updateObject(apiName : String, object : String)
+DELETE 	/endpoint/:apiName/:object		controllers.APIController.removeObject(apiName : String, object : String)
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
